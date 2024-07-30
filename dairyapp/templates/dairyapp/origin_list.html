@@ -1,0 +1,13 @@
+{% extends "dairyapp/base.html" %}
+
+{% block body %}
+    <div class="container">
+        {% for origin in object_list %}
+            <a class="container__button" href="{% url 'dairyapp:origin_update' pk=origin.pk %}">{{ origin.name }}</a>
+        {% empty %}
+            <h5>No origins yet</h5>
+            <a class="container__button" href="{% url 'dairyapp:origin_form' %}">Create Origin</a>
+        {% endfor %}
+        <a class="container__button" href="{% url 'dairyapp:index' %}">Back</a>
+    </div>
+{% endblock %}

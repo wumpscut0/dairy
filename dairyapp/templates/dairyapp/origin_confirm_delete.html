@@ -1,0 +1,15 @@
+{% extends "dairyapp/base.html" %}
+
+{% block body %}
+
+	<form class="container" method="post">
+		{% csrf_token %}
+		<h1>Confirm delete</h1>
+		<p>Delete origin "{{ object.name }}"?</p>
+		<div class="container__container-row">
+			<button class="container__button" type="submit">Yes</button>
+			<a class="container__button" href="{% url 'dairyapp:origin_list' %}">No</a>
+		</div>
+	</form>
+
+{% endblock %}

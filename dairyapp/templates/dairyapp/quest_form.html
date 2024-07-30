@@ -1,0 +1,17 @@
+{% extends "dairyapp/base.html" %}
+
+{% block body %}
+    <form class="container" method="post">
+	    {% csrf_token %}
+	    <div class="container__container-center">
+		    <h4>Origin {{ origin }} accept?</h4>
+	        <div style="display: none;">
+	            {{ form.as_p }}
+	        </div>
+	    </div>
+        <div class="container__container-row">
+	        <button class="container__button" type="submit">Yes</button>
+            <a class="container__button" href="{% url 'dairyapp:index' %}">No</a>
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "dairyapp/base.html" %}
+
+{% block body %}
+    <div class="container">
+        <a class="container__button" href="{% url 'dairyapp:origin_list' %}">Origins</a>
+        <a class="container__button" href="{% url 'dairyapp:quest_list' %}">Quests</a>
+        <a class="container__button" href="{% url 'dairyapp:quest_form' %}">Extract Quest</a>
+        <a class="container__button" href="{% url 'dairyapp:origin_form' %}">Create Origin</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "dairyapp/base.html" %}
+
+{% block body %}
+    <div class="container">
+        <form method="post" class="container__container-left">
+	        {% csrf_token %}
+	        {{ form.as_p }}
+	        <button type="submit" class="container__button">Save</button>
+        </form>
+        <div class="container__container-center">
+	        <form method="post">
+			    {% csrf_token %}
+		        <button class="container__button" type="submit" value="{{ origin.name }}" name="origin_to_quest">Start Quest</button>
+		    </form>
+<!--        <a class="container__button" href="{{ object.origin }}" target="_blank" rel="noopener noreferrer">Origin</a>-->
+            <a class="container__button" href="{% url 'dairyapp:origin_delete' pk=origin.pk %}">Delete</a>
+            <a class="container__button" href="{% url 'dairyapp:origin_list' %}">Back</a>
+        </div>
+	</div>
+{% endblock %}

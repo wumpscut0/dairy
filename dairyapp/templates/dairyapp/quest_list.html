@@ -1,0 +1,28 @@
+{% extends "dairyapp/base.html" %}
+
+{% block body %}
+    <div class="container">
+        {% if not object_list %}
+            <h5>No quests yet</h5>
+            <a class="container__button" href="{% url 'dairyapp:quest_form' %}">Extract Quest</a>
+        {% else %}
+            <table>
+                <tr>
+                    <th>Create at</th><th>Origin</th><th>Knowledge</th>
+                </tr>
+                {% for quest in object_list %}
+                    <tr>
+                        <td><a href="{% url 'dairyapp:quest_update_form' pk=quest.pk %}">{{ quest.created_at }} </a></td>
+                        <td><a href="{{ quest.origin.origin }}" target="_blank">{{ quest.origin.name }}</a></td>
+                        {% if quest.complete_description %}
+                            <td><a href="{% url 'dairyapp:quest_update_form' pk=quest.pk %}">Update knowledge</a></td>
+                        {% else %}
+                            <td><a href="{% url 'dairyapp:quest_update_form' pk=quest.pk %}">Note knowledge</a></td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+        <a class="container__button" href="{% url 'dairyapp:index' %}">Back</a>
+    </div>
+{% endblock %}
