@@ -2,9 +2,10 @@ import datetime
 from datetime import timedelta
 
 from django.forms import BoundField, ModelForm
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
+from django.utils.http import urlencode
 from django.views.generic import ListView, CreateView, TemplateView, UpdateView, DeleteView
 from django.utils.timezone import now
 
@@ -73,12 +74,13 @@ class QuestFormView(CreateView):
             return redirect(reverse("dairyapp:origin_list"))
         origin.last_extracted_at = now()
         origin.save()
-        self.extra_context = {"origin": origin.name}
+        self.request.session["origin_pk"] = origin.pk
+        self.extra_context = {"origin": origin}
         return super().get(request, *args, **kwargs)
 
     def get_initial(self):
         initial = super().get_initial()
-        initial["origin"] = self._extract_actual_origin()
+        initial["origin"] = Origin.objects.get(pk=self.request.session["origin_pk"])
         return initial
 
 
@@ -134,6 +136,22 @@ class QuestUpdateView(UpdateView):
             "quest": quest,
         }
         return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.save()
+        date_value = self.request.POST.get("date")
+
+        # Генерация базового URL
+        base_url = reverse("dairyapp:quest_list")
+
+        # Генерация строки запроса с параметром даты
+        query_string = urlencode({'date': date_value})
+
+        # Формирование полного URL
+        url_with_params = f"{base_url}?{query_string}"
+
+        # Редирект на URL с параметрами
+        return HttpResponseRedirect(url_with_params)
 
 
 class OriginDeleteView(DeleteView):
