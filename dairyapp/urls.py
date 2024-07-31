@@ -7,12 +7,13 @@ from .views import OriginListView, OriginUpdateView, IndexTemplateView, OriginCr
 
 app_name = "dairyapp"
 
+
 urlpatterns = [
     path("", view=IndexTemplateView.as_view(), name="index"),
     path("origin", view=OriginListView.as_view(), name="origin_list"),
-    path("origin/<str:pk>/update", view=OriginUpdateView.as_view(), name="origin_update"),
+    path("origin/<int:pk>/update", view=OriginUpdateView.as_view(), name="origin_update"),
     path("origin/form", view=OriginCreateView.as_view(), name="origin_form"),
-    path("origin/<str:pk>/delete", view=OriginDeleteView.as_view(), name="origin_delete"),
+    path("origin/<int:pk>/delete", view=OriginDeleteView.as_view(), name="origin_delete"),
     path("quest/", view=QuestListView.as_view(), name="quest_list"),
     path("quest/accept", view=QuestFormView.as_view(), name="quest_form"),
     path("quest/<int:pk>/update", view=QuestUpdateView.as_view(), name="quest_update_form"),

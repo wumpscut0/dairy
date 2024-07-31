@@ -29,6 +29,6 @@ class Origin(models.Model):
     ]
     created_at = models.DateTimeField(auto_now_add=True)
     last_extracted_at = models.DateTimeField(null=True)
-    name = models.CharField(max_length=30, primary_key=True)
+    name = models.CharField(max_length=30, unique=True)
     status = models.CharField(max_length=1, default="a", null=False, choices=STATUS_CHOICES)
     origin = models.CharField(max_length=2048, null=True, blank=True)

@@ -2,27 +2,46 @@
 
 {% block body %}
     <div class="container">
+        <h2>Results for {{ date }}</h2>
+
         {% if not object_list %}
-            <h5>No quests yet</h5>
+            <h5>No quests so far</h5>
             <a class="container__button" href="{% url 'dairyapp:quest_form' %}">Extract Quest</a>
         {% else %}
             <table>
                 <tr>
-                    <th>Create at</th><th>Origin</th><th>Knowledge</th>
+                    <th>Create Time</th><th>Origin</th><th>Knowledge</th>
                 </tr>
                 {% for quest in object_list %}
                     <tr>
-                        <td><a href="{% url 'dairyapp:quest_update_form' pk=quest.pk %}">{{ quest.created_at }} </a></td>
+                        <td>{{ quest.created_at|date:"H:i:s" }}</td>
                         <td><a href="{{ quest.origin.origin }}" target="_blank">{{ quest.origin.name }}</a></td>
+	                    {% url 'dairyapp:quest_update_form' pk=quest.pk as base_url %}
                         {% if quest.complete_description %}
-                            <td><a href="{% url 'dairyapp:quest_update_form' pk=quest.pk %}">Update knowledge</a></td>
+                            <td><a href="{{ base_url }}">✏️</a></td>
                         {% else %}
-                            <td><a href="{% url 'dairyapp:quest_update_form' pk=quest.pk %}">Note knowledge</a></td>
+                            <td><a href="{{ base_url }}">🕸️</a></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
             </table>
         {% endif %}
-        <a class="container__button" href="{% url 'dairyapp:index' %}">Back</a>
-    </div>
+
+        {% if has_previous and has_next %}
+            <div class="container__container-row">
+                <a class="container__button" href="?date={{ date|date:'Y-m-d' }}&previous">Previous Day</a>
+                <a class="container__button" href="?date={{ date|date:'Y-m-d' }}&next">Next Day</a>
+            </div>
+        {% elif has_previous %}
+            <div class="container__container-row">
+                <a class="container__button" href="?date={{ date|date:'Y-m-d' }}&previous">Previous Day</a>
+            </div>
+        {% else %}
+            <div class="container__container-right">
+	            <a class="container__button" href="?date={{ date|date:'Y-m-d' }}&next">Next Day</a>
+            </div>
+        {% endif %}
+	    <a class="container__button" href="{% url 'dairyapp:index' %}">Back</a>
+
+	</div>
 {% endblock %}

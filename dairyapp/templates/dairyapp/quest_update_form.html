@@ -9,7 +9,7 @@
             {{ form.as_p }}
             <button class="container__button" type="submit">Save</button>
 	        <a class="container__button" href="{% url 'dairyapp:quest_delete' pk=quest.pk %}">Delete</a>
-            <a class="container__button" href="{% url 'dairyapp:quest_list' %}">Back</a>
+            <a class="container__button" href="{% url 'dairyapp:quest_list' %}?date={{ quest.created_at|date:'Y-m-d' }}">Back</a>
         </form>
     </div>
 {% endblock %}

@@ -20,6 +20,7 @@ body {
 
 .container {
     display: flex;
+    margin: auto;
     flex-direction: column;
     align-items: center;
     background: white;
@@ -33,6 +34,16 @@ body {
     flex-direction: column;
     background: wheat;
     padding-left: 10px;
+    width: 100%;
+    border: 3px solid black;
+    border-radius: 5px;
+}
+
+.container__container-right {
+    display: flex;
+    justify-content: flex-end;
+    background: wheat;
+    padding-right: 10px;
     width: 100%;
     border: 3px solid black;
     border-radius: 5px;
@@ -57,6 +68,16 @@ body {
     border-radius: 5px;
 }
 
+.pagination {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: moccasin;
+    width: 100%;
+    border: 3px solid black;
+    border-radius: 5px;
+}
+
 .container__button {
     display: flex;
     margin: 10px;
@@ -72,12 +93,50 @@ body {
     transition: 0.3s ease;
 }
 
+.container__button2parent {
+    display: flex;
+    margin: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+    justify-content: center;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid black;
+
+    height: 50%;
+    transition: 0.3s ease;
+}
+
+.container__button2child {
+    display: flex;
+    color: black;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    margin: 0;
+    border-radius: 10px;
+    border: 1px solid black;
+}
+
+.container__button2parent:hover {
+    background-color: black;
+    color: white;
+}
+
+.container__button2child:hover {
+    background-color: black;
+    color: white;
+}
+
+
 .container__button:hover {
     background-color: black;
     color: white;
 }
 
 table {
+    width: 100%;
     border-collapse: collapse;
     background: wheat;
 }
@@ -91,7 +150,7 @@ th {
 
 td {
     border: 2px solid black;
-    padding: 5px;
+    padding: 10px;
 }
 
 td a {
