@@ -141,16 +141,12 @@ class QuestUpdateView(UpdateView):
         form.save()
         date_value = self.request.POST.get("date")
 
-        # Генерация базового URL
         base_url = reverse("dairyapp:quest_list")
 
-        # Генерация строки запроса с параметром даты
         query_string = urlencode({'date': date_value})
 
-        # Формирование полного URL
         url_with_params = f"{base_url}?{query_string}"
 
-        # Редирект на URL с параметрами
         return HttpResponseRedirect(url_with_params)
 
 
