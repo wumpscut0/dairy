@@ -37,19 +37,25 @@ class OriginUpdateView(UpdateView):
     success_url = reverse_lazy("dairyapp:origin_list")
     template_name = "dairyapp/origin_update_form.html"
 
+    @staticmethod
+    def _process_start_quest(origin_name: str):
+        origin = Origin.objects.get(name=origin_name)
+        Quest.objects.create(origin=origin)
+        origin.last_extracted_at = now()
+        origin.save()
+        return redirect(reverse("dairyapp:quest_list"))
+
     def form_valid(self, form):
         origin_name = self.request.POST.get("origin_to_quest")
         if origin_name:
-            Quest.objects.create(origin=Origin.objects.get(name=origin_name))
-            return redirect(reverse("dairyapp:quest_list"))
+            return self._process_start_quest(origin_name)
 
         return super().form_valid(form)
 
     def form_invalid(self, form):
         origin_name = self.request.POST.get("origin_to_quest")
         if origin_name:
-            Quest.objects.create(origin=Origin.objects.get(name=origin_name))
-            return redirect(reverse("dairyapp:quest_list"))
+            return self._process_start_quest(origin_name)
         return super().form_invalid(form)
 
 
