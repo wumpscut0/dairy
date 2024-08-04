@@ -15,10 +15,14 @@
                 {% for quest in object_list %}
                     <tr>
                         <td>{{ quest.created_at|date:"H:i:s" }}</td>
-                        <td><a href="{{ quest.origin.origin }}" target="_blank">{{ quest.origin.name }}</a></td>
+	                    {% if quest.origin.origin %}
+                            <td><a href="{{ quest.origin.origin }}" target="_blank">{% firstof quest.origin.name "no name" %}</a></td>
+	                    {% else %}
+	                        <td>{% firstof quest.origin.name "no origin" %}</td>
+	                    {% endif %}
 	                    {% url 'dairyapp:quest_update_form' pk=quest.pk as base_url %}
                         {% if quest.complete_description %}
-                            <td><a href="{{ base_url }}">✏️</a></td>
+                            <td><a href="{{ base_url }}">✏️ {{ quest.completed_at|date:"H:i:s" }}</a></td>
                         {% else %}
                             <td><a href="{{ base_url }}">🕸️</a></td>
                         {% endif %}

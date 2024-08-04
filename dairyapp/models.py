@@ -8,7 +8,7 @@ class Quest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True, blank=True)
     complete_description = models.TextField(max_length=1000, null=True, blank=True)
-    origin = models.ForeignKey("Origin", on_delete=models.PROTECT)
+    origin = models.ForeignKey("Origin", on_delete=models.SET_NULL, null=True)
 
     def save(
         self, force_insert=False, force_update=False, using=None, update_fields=None

@@ -143,17 +143,14 @@ class QuestUpdateView(UpdateView):
         }
         return super().get(request, *args, **kwargs)
 
-    def form_valid(self, form):
-        form.save()
+    def get_success_url(self):
         date_value = self.request.POST.get("date")
 
         base_url = reverse("dairyapp:quest_list")
 
         query_string = urlencode({'date': date_value})
 
-        url_with_params = f"{base_url}?{query_string}"
-
-        return HttpResponseRedirect(url_with_params)
+        return f"{base_url}?{query_string}"
 
 
 class OriginDeleteView(DeleteView):
@@ -163,4 +160,12 @@ class OriginDeleteView(DeleteView):
 
 class QuestDeleteView(DeleteView):
     model = Quest
-    success_url = reverse_lazy("dairyapp:quest_list")
+
+    def get_success_url(self):
+        date_value = self.request.POST.get("date")
+
+        base_url = reverse("dairyapp:quest_list")
+
+        query_string = urlencode({'date': date_value})
+
+        return f"{base_url}?{query_string}"
