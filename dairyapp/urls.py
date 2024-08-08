@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from .views import OriginListView, OriginUpdateView, IndexTemplateView, OriginCreateView, QuestListView, QuestFormView, \
-    QuestUpdateView, OriginDeleteView, QuestDeleteView
+    QuestUpdateView, OriginDeleteView, QuestDeleteView, DayUpdateView
 
 app_name = "dairyapp"
 
@@ -18,6 +18,7 @@ urlpatterns = [
     path("quest/accept", view=QuestFormView.as_view(), name="quest_form"),
     path("quest/<int:pk>/update", view=QuestUpdateView.as_view(), name="quest_update_form"),
     path("quest/<int:pk>/delete", view=QuestDeleteView.as_view(), name="quest_delete"),
+    path("day/<int:pk>/update", view=DayUpdateView.as_view(), name="day_update_form")
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 

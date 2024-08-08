@@ -9,7 +9,7 @@ from django.utils.http import urlencode
 from django.views.generic import ListView, CreateView, TemplateView, UpdateView, DeleteView
 from django.utils.timezone import now
 
-from .models import Quest, Origin
+from .models import Quest, Origin, Day
 
 
 class IndexTemplateView(TemplateView):
@@ -107,9 +107,11 @@ class QuestListView(ListView):
         date = self.request.GET.get('date', now().date())
         if isinstance(date, str):
             date = datetime.datetime.fromisoformat(date).date()
+        day, created = Day.objects.get_or_create(created_at__date=date, defaults={"created_at": date})
+        context['day'] = day
         context['date'] = date
         context['has_previous'] = Quest.objects.filter(created_at__date=date - self.delta_day).exists()
-        context['has_next'] = Quest.objects.filter(created_at__date=date + self.delta_day).exists()
+        context['has_next'] = Quest.objects.filter(created_at__date=date).exists()
         return context
 
     def get(self, request: HttpRequest, *args, **kwargs):
@@ -135,13 +137,36 @@ class QuestUpdateView(UpdateView):
     fields = "complete_description",
     template_name_suffix = "_update_form"
     success_url = reverse_lazy("dairyapp:quest_list")
+    context_object_name = "quest"
 
-    def get(self, request, *args, **kwargs):
-        quest = Quest.objects.select_related("origin").get(pk=kwargs["pk"])
-        self.extra_context = {
-            "quest": quest,
-        }
-        return super().get(request, *args, **kwargs)
+    # def get(self, request, *args, **kwargs):
+    #     quest = Quest.objects.select_related("origin").get(pk=kwargs["pk"])
+    #     self.extra_context = {
+    #         "quest": quest,
+    #     }
+    #     return super().get(request, *args, **kwargs)
+
+    def get_success_url(self):
+        date_value = self.request.POST.get("date")
+
+        base_url = reverse("dairyapp:quest_list")
+
+        query_string = urlencode({'date': date_value})
+
+        return f"{base_url}?{query_string}"
+
+
+class DayUpdateView(UpdateView):
+    model = Day
+    fields = "content",
+    template_name_suffix = "_update_form"
+    success_url = reverse_lazy("dairyapp:quest_list")
+    context_object_name = "day"
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["day"] = Day.objects.select_related("origin").get(pk=context["pk"])
+    #     return context
 
     def get_success_url(self):
         date_value = self.request.POST.get("date")

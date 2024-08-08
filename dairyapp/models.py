@@ -2,6 +2,11 @@ from django.db import models
 from datetime import datetime
 
 
+class Day(models.Model):
+    created_at = models.DateTimeField()
+    content = models.TextField(null=True, blank=True)
+
+
 class Quest(models.Model):
     class Meta:
         ordering = "completed_at", "created_at"

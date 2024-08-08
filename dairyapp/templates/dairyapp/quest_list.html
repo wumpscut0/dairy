@@ -3,7 +3,7 @@
 {% block body %}
     <div class="container">
         <h2>Results for {{ date }}</h2>
-
+	    <a class="container__button" href="{% url 'dairyapp:day_update_form' pk=day.pk %}">Note day</a>
         {% if not object_list %}
             <h5>No quests so far</h5>
             <a class="container__button" href="{% url 'dairyapp:quest_form' %}">Extract Quest</a>
