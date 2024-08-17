@@ -1,15 +1,40 @@
 {% extends "dairyapp/base.html" %}
 
+{% block js %}
+	{% load static %}
+    <script src="{% static 'js/script.js' %}"></script>
+{% endblock %}
+
 {% block body %}
     <div class="container">
         <h4>{{ quest.origin.name }}</h4>
         <h4>{{ quest.created_at }}</h4>
-        <form class="container__button-row" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button class="container__button" value="{{ quest.created_at|date:'Y-m-d' }}" name="date" type="submit">Save</button>
-	        <a class="container__button" href="{% url 'dairyapp:quest_delete' pk=quest.pk %}">Delete</a>
-            <a class="container__button" href="{% url 'dairyapp:quest_list' %}?date={{ quest.created_at|date:'Y-m-d' }}">Back</a>
+<!--	    Этот костыль был сделан ради интереса и скоро будет снят. Эквивалент алгоритма в script.js-->
+	    <form class="quest-form-container" method="post">
+	        {% csrf_token %}
+		    {{ form.as_p }}
+		    <div class="error-area-container" id="errors">
+			    {% for error in quest.errors %}
+			        <div class="error-wrapper">
+				        {% with key="error_description" %}
+			                <textarea name="{{ key }}_{{ forloop.counter0 }}">{{ error.description }}</textarea>
+				        {% endwith %}
+			            {% with key="error_type" %}
+			                <select name="{{ key }}_{{ forloop.counter0 }}">
+				            {% for error_type, error_description in options.items %}
+					            <option value="{{ error_type }}">{{ error_description }}</option>
+				            {% endfor %}
+			                </select>
+				        {% endwith %}
+				        <button>Remove</button>
+			        </div>
+			    {% endfor %}
+	        </div>
+		    <div class="buttons-container">
+			    <button class="primary-button" value="{{ quest.created_at|date:'Y-m-d' }}" name="date" type="submit">Save</button>
+		        <a class="primary-button" href="{% url 'dairyapp:quest_delete' pk=quest.pk %}">Delete</a>
+		        <a class="primary-button" href="{% url 'dairyapp:quest_list' %}?date={{ quest.created_at|date:'Y-m-d' }}">Back</a>
+		    </div>
         </form>
     </div>
 {% endblock %}

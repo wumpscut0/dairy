@@ -1,6 +1,6 @@
-* {
+/* * {
     box-sizing: border-box;
-}
+} */
 
 html {
     height: 100%;
@@ -21,12 +21,70 @@ body {
 .container {
     display: flex;
     margin: auto;
+    width: 50%;
     flex-direction: column;
     align-items: center;
     background: white;
-    width: 20%;
+    border-radius: 10px;
+    border: 3px solid wheat;
+}
+
+.buttons-container {
+    display: flex;
+    margin: auto;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    width: 100%;
     border-radius: 10px;
     border: 1px solid wheat;
+    box-sizing: border-box;
+}
+
+.primary-button {
+    display: flex;
+    margin: 10px;
+    padding: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+    width: 50%;
+    justify-content: center;
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid black;
+    transition: 0.3s ease;
+    box-sizing: border-box;
+}
+
+.quest-form-container {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid orange;
+    padding: 10px;
+    max-width: 50%;
+/*     margin: 0; */
+}
+
+
+.error-area-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+}   
+
+.error-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    border-radius: 10px;
+    padding-bottom: 10px;
 }
 
 .container__container-left {
@@ -78,20 +136,7 @@ body {
     border-radius: 5px;
 }
 
-.container__button {
-    display: flex;
-    margin: 10px;
-    padding: 10px 15px;
-    cursor: pointer;
-    text-decoration: none;
-    color: black;
-    width: 50%;
-    justify-content: center;
-    background-color: white;
-    border-radius: 10px;
-    border: 1px solid black;
-    transition: 0.3s ease;
-}
+
 
 .container__button2parent {
     display: flex;
@@ -130,10 +175,11 @@ body {
 }
 
 
-.container__button:hover {
+.primary-button:hover {
     background-color: black;
     color: white;
 }
+
 
 table {
     width: 100%;
@@ -163,6 +209,12 @@ td a:hover {
 }
 
 textarea {
+    display: flex;
     width: 100%;
     resize: vertical;
+}
+
+select {
+    display: flex;
+    width: 100%;
 }
