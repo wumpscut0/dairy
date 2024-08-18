@@ -21,12 +21,15 @@
 	                        <td>{% firstof quest.origin.name "no origin" %}</td>
 	                    {% endif %}
 	                    {% url 'dairyapp:quest_update_form' pk=quest.pk as base_url %}
-                        {% if quest.last_update %}
-                            <td><a href="{{ base_url }}">✏️ {{ quest.completed_at|date:"d.m.Y H:i" }}</a></td>
-	                        <td><a href="{{ base_url }}">✏️ {{ quest.last_update|date:"d.m.Y H:i" }}</a></td>
+                        {% if quest.completed_at %}
+                            <td><a href="{{ base_url }}">✏{{ quest.completed_at|date:"d.m.Y H:i" }}</a></td>
                         {% else %}
-                            <td><a href="{{ base_url }}">🕸️</a></td>
-	                        <td><a href="{{ base_url }}">🕸️</a></td>
+                            <td><a href="{{ base_url }}">🕸</a></td>
+                        {% endif %}
+	                    {% if quest.last_update %}
+                            <td><a href="{{ base_url }}">✏{{ quest.last_update|date:"d.m.Y H:i" }}</a></td>
+                        {% else %}
+	                        <td><a href="{{ base_url }}">🕸</a></td>
                         {% endif %}
 
                     </tr>
