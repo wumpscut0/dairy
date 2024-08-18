@@ -1,8 +1,7 @@
-import datetime
-from datetime import timedelta
 
-from django.forms import BoundField, ModelForm
-from django.http import HttpRequest, HttpResponseRedirect
+from datetime import timedelta, datetime
+
+from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.utils.http import urlencode
@@ -99,14 +98,14 @@ class QuestListView(ListView):
     def get_queryset(self):
         date = self.request.GET.get('date', now().date())
         if isinstance(date, str):
-            date = datetime.datetime.fromisoformat(date).date()
+            date = datetime.fromisoformat(date).date()
         return Quest.objects.filter(created_at__date=date).select_related("origin").order_by("created_at")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         date = self.request.GET.get('date', now().date())
         if isinstance(date, str):
-            date = datetime.datetime.fromisoformat(date).date()
+            date = datetime.fromisoformat(date).date()
         day, created = Day.objects.get_or_create(created_at__date=date, defaults={"created_at": date})
         context['day'] = day
         context['date'] = date
@@ -117,7 +116,7 @@ class QuestListView(ListView):
     def get(self, request: HttpRequest, *args, **kwargs):
         date_str = request.GET.get('date')
         if date_str:
-            date = datetime.datetime.fromisoformat(date_str).date()
+            date = datetime.fromisoformat(date_str).date()
         else:
             date = now().date()
 
@@ -225,7 +224,7 @@ error_types = {
 
 class QuestUpdateView(UpdateView):
     model = Quest
-    fields = "theme_description", "total_tasks", "total_completed_tasks", "complete_description",
+    fields = "theme_description", "total_tasks", "total_completed_tasks", "complete_description", "knowledge"
     template_name_suffix = "_update_form"
     context_object_name = "quest"
 
@@ -239,6 +238,7 @@ class QuestUpdateView(UpdateView):
         types = [value for name, value in self.request.POST.items() if name.startswith("error_type")]
         descriptions = [value for name, value in self.request.POST.items() if name.startswith("error_description")]
         self.object.errors = [{"type": types[i], "description": descriptions[i]} for i in range(len(types))]
+        self.object.last_update = now()
         self.object.save()
         return response
 
@@ -258,11 +258,6 @@ class DayUpdateView(UpdateView):
     template_name_suffix = "_update_form"
     success_url = reverse_lazy("dairyapp:quest_list")
     context_object_name = "day"
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context["day"] = Day.objects.select_related("origin").get(pk=context["pk"])
-    #     return context
 
     def get_success_url(self):
         date_value = self.request.POST.get("date")

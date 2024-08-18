@@ -3,29 +3,32 @@
 {% block body %}
     <div class="container">
         <h2>Results for {{ date }}</h2>
-	    <a class="container__button" href="{% url 'dairyapp:day_update_form' pk=day.pk %}">Note day</a>
+	    <a class="primary-button" href="{% url 'dairyapp:day_update_form' pk=day.pk %}">Note day</a>
         {% if not object_list %}
             <h5>No quests so far</h5>
-            <a class="container__button" href="{% url 'dairyapp:quest_form' %}">Extract Quest</a>
+            <a class="primary-button" href="{% url 'dairyapp:quest_form' %}">Extract Quest</a>
         {% else %}
             <table>
                 <tr>
-                    <th>Create Time</th><th>Origin</th><th>Knowledge</th>
+                    <th>Create at</th><th>Origin</th><th>Completed at</th><th>Last update</th>
                 </tr>
                 {% for quest in object_list %}
                     <tr>
-                        <td>{{ quest.created_at|date:"H:i:s" }}</td>
+                        <td>{{ quest.created_at|date:"d.m.Y H:i"}}</td>
 	                    {% if quest.origin.origin %}
                             <td><a href="{{ quest.origin.origin }}" target="_blank">{% firstof quest.origin.name "no name" %}</a></td>
 	                    {% else %}
 	                        <td>{% firstof quest.origin.name "no origin" %}</td>
 	                    {% endif %}
 	                    {% url 'dairyapp:quest_update_form' pk=quest.pk as base_url %}
-                        {% if quest.complete_description %}
-                            <td><a href="{{ base_url }}">✏️ {{ quest.completed_at|date:"H:i:s" }}</a></td>
+                        {% if quest.last_update %}
+                            <td><a href="{{ base_url }}">✏️ {{ quest.completed_at|date:"d.m.Y H:i" }}</a></td>
+	                        <td><a href="{{ base_url }}">✏️ {{ quest.last_update|date:"d.m.Y H:i" }}</a></td>
                         {% else %}
                             <td><a href="{{ base_url }}">🕸️</a></td>
+	                        <td><a href="{{ base_url }}">🕸️</a></td>
                         {% endif %}
+
                     </tr>
                 {% endfor %}
             </table>
@@ -33,19 +36,19 @@
 
         {% if has_previous and has_next %}
             <div class="container__container-row">
-                <a class="container__button" href="?date={{ date|date:'Y-m-d' }}&previous">Previous Day</a>
-                <a class="container__button" href="?date={{ date|date:'Y-m-d' }}&next">Next Day</a>
+                <a class="primary-button" href="?date={{ date|date:'Y-m-d' }}&previous">Previous Day</a>
+                <a class="primary-button" href="?date={{ date|date:'Y-m-d' }}&next">Next Day</a>
             </div>
         {% elif has_previous %}
             <div class="container__container-row">
-                <a class="container__button" href="?date={{ date|date:'Y-m-d' }}&previous">Previous Day</a>
+                <a class="primary-button" href="?date={{ date|date:'Y-m-d' }}&previous">Previous Day</a>
             </div>
         {% else %}
             <div class="container__container-right">
-	            <a class="container__button" href="?date={{ date|date:'Y-m-d' }}&next">Next Day</a>
+	            <a class="primary-button" href="?date={{ date|date:'Y-m-d' }}&next">Next Day</a>
             </div>
         {% endif %}
-	    <a class="container__button" href="{% url 'dairyapp:index' %}">Back</a>
+	    <a class="primary-button" href="{% url 'dairyapp:index' %}">Back</a>
 
 	</div>
 {% endblock %}

@@ -15,15 +15,13 @@ class Quest(models.Model):
         ordering = "completed_at", "created_at"
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True, blank=True)
-    # Hold description
+    last_update = models.DateTimeField(null=True)
     theme_description = models.CharField(max_length=500, null=True, blank=True)
-    # Rooms
     total_tasks = models.SmallIntegerField(default=0)
-    # Completed Rooms
     total_completed_tasks = models.SmallIntegerField(default=0)
-    # deaths
     errors = models.JSONField(default=list)
     complete_description = models.TextField(max_length=1000, null=True, blank=True)
+    knowledge = models.TextField(max_length=1000, null=True, blank=True)
     origin = models.ForeignKey("Origin", on_delete=models.SET_NULL, null=True)
 
     def clean(self):
