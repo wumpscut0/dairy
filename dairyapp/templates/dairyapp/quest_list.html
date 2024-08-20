@@ -5,8 +5,7 @@
         <h2>Results for {{ date }}</h2>
 	    <a class="primary-button" href="{% url 'dairyapp:day_update_form' pk=day.pk %}">Note day</a>
         {% if not object_list %}
-            <h5>No quests so far</h5>
-            <a class="primary-button" href="{% url 'dairyapp:quest_form' %}">Extract Quest</a>
+            <h5>I hope this day didn't go to waste</h5>
         {% else %}
             <table>
                 <tr>
@@ -31,7 +30,6 @@
                         {% else %}
 	                        <td><a href="{{ base_url }}">🕸</a></td>
                         {% endif %}
-
                     </tr>
                 {% endfor %}
             </table>
@@ -52,6 +50,5 @@
             </div>
         {% endif %}
 	    <a class="primary-button" href="{% url 'dairyapp:index' %}">Back</a>
-
 	</div>
 {% endblock %}

@@ -140,6 +140,5 @@ document.addEventListener("DOMContentLoaded", () => {
             errorWrapper.remove()
         });
     };
-
     errors.append(label, addButton);
 });

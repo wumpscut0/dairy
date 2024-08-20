@@ -109,8 +109,8 @@ class QuestListView(ListView):
         day, created = Day.objects.get_or_create(created_at__date=date, defaults={"created_at": date})
         context['day'] = day
         context['date'] = date
-        context['has_previous'] = Quest.objects.filter(created_at__date=date - self.delta_day).exists()
-        context['has_next'] = Quest.objects.filter(created_at__date=date).exists()
+        context['has_previous'] = Quest.objects.filter(created_at__date__lt=date).exists()
+        context['has_next'] = Quest.objects.filter(created_at__date__gt=date).exists()
         return context
 
     def get(self, request: HttpRequest, *args, **kwargs):
