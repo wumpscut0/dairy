@@ -1,0 +1,8 @@
+.gitignore
+db.sqlite3
+.idea
+*.xml
+/dairyapp/static/
+/dairyapp/migrations/
+/08.22.2024.json
+/errors_types.json

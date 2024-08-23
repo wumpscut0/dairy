@@ -23,9 +23,16 @@ SECRET_KEY = "django-insecure-^fwmmllab9k&f3+6+saims+o*p4gkl_8g4vf-ty!=9ajfdue7^
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+CORS_ORIGIN_ALLOW_ALL = True
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
 
-ALLOWED_HOSTS = []
-
+]
+CORS_ORIGIN_WHITELIST = [
+    "http://127.0.0.1",
+    "http://localhost"
+]
 # Application definition
 
 INSTALLED_APPS = [
@@ -35,10 +42,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "dairyapp.apps.DairyappConfig"
+
+    'rest_framework',
+    
+    "dairyapp.apps.DairyappConfig",
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -46,6 +57,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
 ]
 
 ROOT_URLCONF = "dairy.urls"

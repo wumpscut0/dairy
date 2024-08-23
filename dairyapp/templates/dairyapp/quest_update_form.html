@@ -2,6 +2,8 @@
 {% load static %}
 {% block js %}
 	{% load static %}
+	<script>const QUEST_ID = {{ quest.pk }}</script>
+	<script>const REDIRECT_URL = "{% url 'dairyapp:quest_list' %}?date={{ quest.created_at|date:'Y-m-d' }}"</script>
     <script src="{% static 'js/script.js' %}"></script>
 {% endblock %}
 
@@ -9,32 +11,34 @@
     <div class="container">
         <h4>{{ quest.origin.name }}</h4>
         <h4>{{ quest.created_at }}</h4>
-<!--	    Этот костыль был сделан ради интереса и скоро будет снят. Эквивалент алгоритма в script.js-->
-	    <form class="quest-form-container" method="post">
-	        {% csrf_token %}
-		    {{ form.as_p }}
-		    <div class="error-area-container" id="errors">
-			    {% for error in quest.errors %}
-			        <div class="error-wrapper">
-				        {% with key="error_description" %}
-			                <textarea name="{{ key }}_{{ forloop.counter0 }}">{{ error.description }}</textarea>
-				        {% endwith %}
-			            {% with key="error_type" %}
-			                <select name="{{ key }}_{{ forloop.counter0 }}">
-				            {% for error_type, error_description in options.items %}
-					            <option value="{{ error_type }}">{{ error_description }}</option>
-				            {% endfor %}
-			                </select>
-				        {% endwith %}
-				        <button>Remove</button>
-			        </div>
-			    {% endfor %}
-	        </div>
-		    <div class="buttons-container">
-			    <button class="primary-button" value="{{ quest.created_at|date:'Y-m-d' }}" name="date" type="submit">Save</button>
-		        <a class="primary-button" href="{% url 'dairyapp:quest_delete' pk=quest.pk %}">Delete</a>
-		        <a class="primary-button" href="{% url 'dairyapp:quest_list' %}?date={{ quest.created_at|date:'Y-m-d' }}">Back</a>
-		    </div>
-        </form>
+
+	    <label for="theme">Theme</label>
+	    <input id="theme" value="{% firstof quest.theme_description '' %}">
+
+	    <div id="done-container" class="item-container">
+		    <h4>Done List</h4>
+	    </div>
+	    <button id="add-done" class="primary-button">🪦 Add done</button>
+
+	    <div id="error-container" class="item-container">
+		    <h4>Error List</h4>
+	    </div>
+	    <button type="button" id="add-error" class="primary-button">Add error</button>
+
+	    <div id="problem-container" class="item-container">
+		    <h4>Problem List</h4>
+	    </div>
+	    <button type="button" id="add-problem" class="primary-button">🌱 Add problem</button>
+
+	    <div id="knowledge-container" class="item-container">
+		    <h4>Knowledge List</h4>
+	    </div>
+	    <button type="button" id="add-knowledge" class="primary-button">🧠 Add knowledge</button>
+
+	    <div class="buttons-container">
+		    <button class="primary-button" id="save-quest" type="button">Save</button>
+	        <a class="primary-button" href="{% url 'dairyapp:quest_delete' pk=quest.pk %}">Delete</a>
+	        <a class="primary-button" href="{% url 'dairyapp:quest_list' %}?date={{ quest.created_at|date:'Y-m-d' }}">Back</a>
+        </div>
     </div>
 {% endblock %}

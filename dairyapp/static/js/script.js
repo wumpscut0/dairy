@@ -1,144 +1,190 @@
-class Error {
-    errorTypes = {
-        // # Ошибки восприятия и внимания
-        "inattention": "Недостаток внимания или концентрации, приводящий к пропуску важных деталей.",
-        "perception": "Ошибки восприятия данных или сигналов, неправильная интерпретация окружающей среды.",
-        "observation": "Недостаточные или неправильные наблюдения, что приводит к искажению фактов.",
-        "over_focus": "Слишком узкая фокусировка на одном аспекте задачи, игнорирование других важных деталей.",
-        "distraction": "Отвлеченность на несущественные детали, мешающая сосредоточиться на задаче.",
-
-        // # Ошибки мышления и логики
-        "logic": "Логические ошибки, нарушения в структуре аргументов или выводов.",
-        "assumption": "Ошибки, вызванные неверными предположениями или допущениями.",
-        "cognitive_bias": "Когнитивные искажения, такие как предвзятость или стереотипное мышление.",
-        "heuristic": "Ошибки, вызванные использованием упрощенных методов (эвристик) для решения задачи.",
-        "over_generalization": "Ошибки обобщения на основе ограниченного количества примеров.",
-        "paradox": "Ошибки, связанные с противоречиями или парадоксами в мышлении.",
-
-        // # Ошибки памяти и знаний
-        "memory": "Проблемы с запоминанием или воспроизведением информации, ведущие к ошибкам.",
-        "knowledge_gap": "Недостаток знаний или навыков, приводящий к неправильным решениям.",
-        "false_memory": "Ошибки, связанные с ложными воспоминаниями, искажением фактов.",
-
-        // # Ошибки интерпретации и понимания
-        "interpretation": "Ошибки в толковании данных или информации, ведущие к неверным выводам.",
-        "miscommunication": "Недоразумения, вызванные неправильной передачей или пониманием информации.",
-        "ambiguity": "Двойственное понимание из-за неясности или многозначности информации.",
-
-        // # Ошибки вычислений и оценок
-        "arithmetic": "Ошибки в математических вычислениях, неверные результаты арифметических операций.",
-        "calculation": "Ошибки в процессе расчета, не только математического, но и логического.",
-        "estimation": "Ошибки при оценке величин или времени, неверные предположения о размерах, объемах и т. д.",
-        "approximation": "Ошибки, вызванные упрощением или приблизительными расчетами, которые не учитывают все факторы.",
-
-        // # Ошибки планирования и стратегии
-        "planning": "Ошибки на этапе планирования, выбор неверной стратегии для выполнения задачи.",
-        "optimization": "Ошибки, вызванные неэффективной оптимизацией процессов или ресурсов.",
-        "time_management": "Ошибки в управлении временем, пропуск дедлайнов или нерациональное распределение времени.",
-        "resource_allocation": "Ошибки в распределении ресурсов, таких как время, деньги, материалы.",
-
-        // # Ошибки выполнения и действий
-        "execution": "Ошибки при выполнении действий, отклонение от плана или недостаточная точность.",
-        "coordination": "Проблемы в координации действий или сотрудничестве с другими людьми.",
-        "technical": "Ошибки, связанные с неисправностями техники или неправильным использованием инструментов.",
-        "manual": "Ошибки, связанные с физическим выполнением задачи, такие как неправильное движение или манипуляция.",
-
-        // # Ошибки суждений и принятия решений
-        "judgment": "Неправильная оценка ситуации или факторов, влияющих на принятие решений.",
-        "overconfidence": "Излишняя уверенность в своих силах или знаниях, приводящая к риску или ошибкам.",
-        "underestimation": "Недооценка сложности задачи или факторов риска, ведущая к неудачам.",
-        "decision-making": "Ошибки в процессе принятия решений, выбор неверных альтернатив.",
-        "risk_assessment": "Ошибки в оценке рисков, приводящие к неоправданным решениям.",
-        "ethical": "Ошибки, связанные с нарушением моральных или этических норм, приводящие к конфликтам или негативным последствиям.",
-
-        // # Ошибки взаимодействия с окружающей средой
-        "contextual": "Ошибки, вызванные неправильным учетом контекста или условий задачи.",
-        "environmental": "Ошибки, вызванные внешними условиями, такими как погода, шум, освещение.",
-        "cultural": "Ошибки, связанные с неправильным пониманием или учетом культурных различий.",
-
-        // # Ошибки мотивации и эмоций
-        "motivation": "Ошибки, вызванные недостатком или избытком мотивации, что может повлиять на качество выполнения задачи.",
-        "emotional": "Ошибки, вызванные эмоциональными состояниями, такими как стресс, страх, гнев, влияющие на объективность и рациональность.",
-
-        // # Ошибки обучения и адаптации
-        "learning": "Ошибки в процессе обучения или применения новых знаний, трудности с усвоением информации.",
-        "adaptation": "Ошибки в адаптации к новым условиям или изменениям, неспособность быстро приспособиться.",
-
-        // # Системные и организационные ошибки
-        "systematic": "Систематические ошибки, повторяющиеся из-за структурных проблем или недостатков в процессе.",
-        "procedural": "Ошибки, связанные с нарушением процедур или правил, ведут к отклонению от стандарта.",
-        "compliance": "Несоблюдение стандартов, требований или правил, приводящее к ошибкам или санкциям.",
-        "bureaucratic": "Ошибки, вызванные чрезмерной бюрократией, затягиванием процессов или препятствиями.",
-        "review": "Ошибки на этапе проверки или оценки выполненной работы, недосмотр или пропуск важных аспектов.",
-
-        // # Ошибки взаимодействия с другими людьми
-        "communication": "Ошибки в передаче или интерпретации информации между людьми, ведут к недопониманию.",
-        "conflict": "Ошибки, вызванные межличностными конфликтами, влияющие на выполнение задач.",
-        "negotiation": "Ошибки в процессе переговоров, приводящие к неудовлетворительным результатам.",
-        "trust": "Ошибки, связанные с неправильным уровнем доверия, как избыточным, так и недостаточным.",
-        "collaboration": "Ошибки в совместной работе, вызванные недостаточной координацией или взаимодействием.",
-
-        // # Специфические ошибки, связанные с задачей
-        "domain_specific": "Ошибки, характерные для конкретной области знаний или специфических задач.",
-        "specialization": "Ошибки, вызванные узкой специализацией или недостатком знаний в смежных областях.",
-        "tools_usage": "Ошибки в использовании инструментов или технологий, неправильное применение или настройка.",
-
-        // # Прочие ошибки
-        "random": "Ошибки, которые трудно предсказать или классифицировать, случайные ошибки.",
-        "unforeseen": "Ошибки, связанные с неожиданными обстоятельствами или событиями, которые невозможно было предугадать.",
-        "external": "Ошибки, вызванные внешними факторами, которые невозможно контролировать.",
-        "neglect": "Пренебрежение важными аспектами задачи, ведущее к пропуску или упущению критической информации.",
-        "fatigue": "Ошибки, вызванные усталостью или истощением, влияющие на способность концентрироваться и принимать правильные решения."
+class Api {
+    baseUrl = "http://localhost:8000/api";
+    async getErrorTypes() {
+        const response = await fetch(`${this.baseUrl}/meta/errors`);
+        const body = await response.json();
+        if (!response.ok) {
+            console.log(body);
+        } else {
+            return body;
+        }
     };
+    async getQuestItems() {
+        const response = await fetch(`${this.baseUrl}/quest/${QUEST_ID}`);
+        const body = await response.json();
+        if (!response.ok) {
+            console.log(body);
+        } else {
+            return body;
+        };
+    };
+    async putQuest(items) {
+        const response = await fetch(`${this.baseUrl}/quest/${QUEST_ID}`, {
+            method: "PUT",
+            body: JSON.stringify(items),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const body = await response.json()
+        if (!response.ok) {
+            console.log(body);
+        } 
+    };
+};
 
-    constructor() {
-        const errors = document.getElementById("errors");
-        const currentErrorIndex = errors.children.length - 2
-        this.errorWrapper = document.createElement("div");
+const API = new Api();
+
+
+class Item { 
+    constructor(containerId, itemId, text="", selectValue=undefined, errorTypes=undefined) {
+        this.errorTypes = errorTypes;
+
+        this.itemsContainer = document.getElementById(containerId);
+        
+        this.itemWrapper = document.createElement("div");
+        this.itemWrapper.value = itemId;
+        
         this.textarea = document.createElement("textarea");
-        this.select = document.createElement("select");
+        this.textarea.textContent = text;
+
         this.removeButton = document.createElement("button");
         this.removeButton.textContent = "Remove";
-        for (const errorType in this.errorTypes) {
-            const option = document.createElement("option");
-            option.textContent = this.errorTypes[errorType];
-            option.value = errorType;
-            this.select.append(option);
-        };
-
-        this.textarea.name = `error_description_${currentErrorIndex}`
-        this.select.name = `error_type_${currentErrorIndex}`
-        this.errorWrapper.classList.add("error-wrapper");
-
         this.removeButton.addEventListener("click", () => {
-            this.errorWrapper.remove();
+            this.itemWrapper.innerHTML = '';
+            this.itemWrapper.remove();
         });
 
-        this.errorWrapper.append(this.textarea, this.select, this.removeButton);
-        errors.insertBefore(this.errorWrapper, errors.children[currentErrorIndex]);
+        if (containerId === "error-container") {
+            this.select = document.createElement("select");
+            for (const errorType in this.errorTypes) {
+                const option = document.createElement("option");
+                option.textContent = this.errorTypes[errorType];
+                option.value = errorType;
+                this.select.append(option);
+            };
+            this.select.value = selectValue;
+            this.itemWrapper.append(this.textarea, this.select, this.removeButton);
+        } else {
+            this.itemWrapper.append(this.textarea, this.removeButton);
+        };
+
+        this.itemWrapper.classList.add("item-container__item");
+        
+        this.itemsContainer.append(this.itemWrapper);
+        return this;
     };
 };
 
 
-document.addEventListener("DOMContentLoaded", () => {
-    const errors = document.getElementById("errors");
-    const label = document.createElement("label");
-    const addButton = document.createElement("button");
+class Init {
+    constructor(errorTypes) {
+        this.errorTypes = errorTypes;
+    }
+    initView() {
+        const theme = document.getElementById("theme")
+        const addDone = document.getElementById("add-done");
+        const addError = document.getElementById("add-error");
+        const addProblem = document.getElementById("add-problem");
+        const addKnowledge = document.getElementById("add-knowledge");
+        const saveQuest = document.getElementById("save-quest");
+        
+        addDone.addEventListener("click", () => {
+            new Item("done-container", this.genid(this.items.done));
+        });
+        addError.addEventListener("click", () => {
+            new Item("error-container", this.genid(this.items.errors), "", undefined, this.errorTypes);
+        });
+        addProblem.addEventListener("click", () => {
+            new Item("problem-container", this.genid(this.items.problems));
+        });
+        addKnowledge.addEventListener("click", () => {
+            new Item("knowledge-container", this.genid(this.items.knowledge));
+        });
 
-    label.textContent = "Add error";
-    label.for = "add-button";
-    addButton.id = "add-button";
-    addButton.textContent = "+";
-    addButton.type = "button";
-
-    addButton.addEventListener("click", () => {
-        new Error();
-    });
-
-    for (const errorWrapper of errors.children) {
-        errorWrapper.getElementsByTagName("button")[0].addEventListener("click", () => {
-            errorWrapper.remove()
+        saveQuest.addEventListener("click", async (e) => {
+            const doneContainer = document.getElementById("done-container");
+            const errorContainer = document.getElementById("error-container");
+            const problemContainer = document.getElementById("problem-container");
+            const knowledgeContainer = document.getElementById("knowledge-container");
+            const body = {
+                theme_description: theme.value,
+                done: [],
+                errors: [],
+                problems: [],
+                knowledge: [],
+            };
+            
+            for (const wrapper of doneContainer.getElementsByTagName("div")) {
+                body.done.push({
+                    id: wrapper.value,
+                    text: wrapper.getElementsByTagName("textarea")[0].value
+                });
+            };
+            for (const wrapper of doneContainer.getElementsByTagName("div")) {
+                body.errors.push({
+                    id: wrapper.value,
+                    text: wrapper.getElementsByTagName("textarea")[0].value,
+                    type: wrapper.getElementsByTagName("select")[0].value
+                });
+            };
+            for (const wrapper of doneContainer.getElementsByTagName("div")) {
+                body.problems.push({
+                    id: wrapper.value,
+                    text: wrapper.getElementsByTagName("textarea")[0].value
+                });
+            };
+            for (const wrapper of doneContainer.getElementsByTagName("div")) {
+                body.knowledge.push({
+                    id: wrapper.value,
+                    text: wrapper.getElementsByTagName("textarea")[0].value
+                });
+            };
+            await API.putQuest(body);
+            document.location.href = REDIRECT_URL;
         });
     };
-    errors.append(label, addButton);
+
+    async initItems() {
+        this.items = await API.getQuestItems();
+        if (this.items.done) {
+            for (const done of this.items.done) {
+                new Item("done-container", done.id, done.text);
+            };
+        };
+        if (this.items.errors) {
+            for (const error of this.items.errors) {
+                new Item("error-container", error.id, error.text, error.type, this.errorTypes);
+            };
+        };
+        if (this.items.problems) {
+            for (const problem of this.items.problems) {
+                new Item("problem-container", problem.id, problem.text);
+            };
+        };
+        if (this.items.knowledge) {
+            for (const knowledge of this.items.knowledge) {
+                new Item("knowledge-container", knowledge.id, knowledge.text);
+            };
+        };
+    };
+
+    genid(items) {
+        console.log(items);
+        const ids = [];
+        for (const item of items) {
+            ids.push(item.id);
+        };
+        const id = Math.max(ids) + 1;
+        items.push(id)
+        return id
+    };
+};
+
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const errorTypes = await API.getErrorTypes();
+    const init = new Init(errorTypes)
+    init.initView();
+    init.initItems();
 });

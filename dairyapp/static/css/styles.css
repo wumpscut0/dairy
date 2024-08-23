@@ -37,7 +37,7 @@ body {
     background: white;
     width: 100%;
     border-radius: 10px;
-    border: 1px solid wheat;
+    border: 1px solid black;
     box-sizing: border-box;
 }
 
@@ -65,21 +65,22 @@ body {
     border: 1px solid orange;
     padding: 10px;
     max-width: 50%;
-/*     margin: 0; */
 }
 
 
-.error-area-container {
+.item-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     background: white;
     border-radius: 10px;
+    border: 1px solid wheat;
     padding: 10px;
 }   
 
-.error-wrapper {
+.item-container__item {
     display: flex;
+    width: 100%;
     flex-direction: column;
     align-items: center;
     background: white;
