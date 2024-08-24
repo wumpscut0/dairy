@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import OriginListView, OriginUpdateView, IndexTemplateView, OriginCreateView, QuestListView, QuestFormView, \
-    QuestTemplateView, OriginDeleteView, QuestDeleteView, DayUpdateView, get_error_types, QuestApi
+    QuestTemplateView, OriginDeleteView, QuestDeleteView, DayUpdateView, get_types, QuestApi
 
 app_name = "dairyapp"
 
@@ -18,9 +18,7 @@ urlpatterns = [
     path("quest/<int:pk>/delete", view=QuestDeleteView.as_view(), name="quest_delete"),
     path("day/<int:pk>/update", view=DayUpdateView.as_view(), name="day_update_form"),
     path("api/quest/<int:pk>", view=QuestApi.as_view()),
-    # path("api/meta/done", view=quests_api),
-    path("api/meta/errors", view=get_error_types),
-    # path("api/meta/problems", view=quests_api),
+    path("api/meta/types", view=get_types),
 ]
 
 

@@ -4,5 +4,5 @@ db.sqlite3
 *.xml
 /dairyapp/static/
 /dairyapp/migrations/
-/08.22.2024.json
-/errors_types.json
+*.json
+/dairy/.env

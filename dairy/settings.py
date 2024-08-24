@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os.path
+from os import getenv
 from pathlib import Path
+from dotenv import find_dotenv, load_dotenv
+load_dotenv(find_dotenv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,19 +22,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-^fwmmllab9k&f3+6+saims+o*p4gkl_8g4vf-ty!=9ajfdue7^"
+HOST = getenv("HOST")
+SECRET_KEY = getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-CORS_ORIGIN_ALLOW_ALL = True
 ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-
+    HOST,
 ]
 CORS_ORIGIN_WHITELIST = [
-    "http://127.0.0.1",
-    "http://localhost"
+    f"http://{HOST}"
 ]
 # Application definition
 
@@ -132,3 +132,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Other
+
+API_BASE_URL = f"http://{HOST}:{getenv("PORT")}/api"

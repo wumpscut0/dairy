@@ -1,7 +1,6 @@
 class Api {
-    baseUrl = "http://localhost:8000/api";
-    async getErrorTypes() {
-        const response = await fetch(`${this.baseUrl}/meta/errors`);
+    async getTypes() {
+        const response = await fetch(`${BASE_URL}/meta/types`);
         const body = await response.json();
         if (!response.ok) {
             console.log(body);
@@ -9,8 +8,8 @@ class Api {
             return body;
         }
     };
-    async getQuestItems() {
-        const response = await fetch(`${this.baseUrl}/quest/${QUEST_ID}`);
+    async getQuest() {
+        const response = await fetch(`${BASE_URL}/quest/${QUEST_ID}`);
         const body = await response.json();
         if (!response.ok) {
             console.log(body);
@@ -19,7 +18,7 @@ class Api {
         };
     };
     async putQuest(items) {
-        const response = await fetch(`${this.baseUrl}/quest/${QUEST_ID}`, {
+        const response = await fetch(`${BASE_URL}/quest/${QUEST_ID}`, {
             method: "PUT",
             body: JSON.stringify(items),
             headers: {
@@ -37,154 +36,89 @@ const API = new Api();
 
 
 class Item { 
-    constructor(containerId, itemId, text="", selectValue=undefined, errorTypes=undefined) {
-        this.errorTypes = errorTypes;
-
-        this.itemsContainer = document.getElementById(containerId);
-        
-        this.itemWrapper = document.createElement("div");
-        this.itemWrapper.value = itemId;
-        
+    constructor(containerId, types, currentText="", selectedType=undefined) {
         this.textarea = document.createElement("textarea");
-        this.textarea.textContent = text;
+        this.textarea.textContent = currentText;
+
+        this.select = document.createElement("select");
+        for (const type in types) {
+            const option = document.createElement("option");
+            option.textContent = types[type];
+            option.value = type;
+            this.select.append(option);
+        };
+        this.select.value = selectedType;
 
         this.removeButton = document.createElement("button");
         this.removeButton.textContent = "Remove";
         this.removeButton.addEventListener("click", () => {
-            this.itemWrapper.innerHTML = '';
-            this.itemWrapper.remove();
+            this.item.remove();
         });
 
-        if (containerId === "error-container") {
-            this.select = document.createElement("select");
-            for (const errorType in this.errorTypes) {
-                const option = document.createElement("option");
-                option.textContent = this.errorTypes[errorType];
-                option.value = errorType;
-                this.select.append(option);
-            };
-            this.select.value = selectValue;
-            this.itemWrapper.append(this.textarea, this.select, this.removeButton);
-        } else {
-            this.itemWrapper.append(this.textarea, this.removeButton);
-        };
-
-        this.itemWrapper.classList.add("item-container__item");
+        this.item = document.createElement("div");
+        this.item.classList.add("item-container__item");
+        this.item.append(this.textarea, this.select, this.removeButton);
         
-        this.itemsContainer.append(this.itemWrapper);
-        return this;
+        document.getElementById(containerId).append(this.item);
+        return this.item;
     };
 };
 
 
 class Init {
-    constructor(errorTypes) {
-        this.errorTypes = errorTypes;
-    }
+    constructor(types) {
+        // const types = types
+        // this.types = types;
+        this.itemsMap = [
+            ["done", "add-done", "done-container", types.done],
+            ["errors", "add-error", "error-container", types.errors],
+            ["problems", "add-problem", "problem-container", types.problems],
+            ["knowledge", "add-knowledge", "knowledge-container", types.knowledge],
+        ];
+    };
     initView() {
-        const theme = document.getElementById("theme")
-        const addDone = document.getElementById("add-done");
-        const addError = document.getElementById("add-error");
-        const addProblem = document.getElementById("add-problem");
-        const addKnowledge = document.getElementById("add-knowledge");
-        const saveQuest = document.getElementById("save-quest");
-        
-        addDone.addEventListener("click", () => {
-            new Item("done-container", this.genid(this.items.done));
-        });
-        addError.addEventListener("click", () => {
-            new Item("error-container", this.genid(this.items.errors), "", undefined, this.errorTypes);
-        });
-        addProblem.addEventListener("click", () => {
-            new Item("problem-container", this.genid(this.items.problems));
-        });
-        addKnowledge.addEventListener("click", () => {
-            new Item("knowledge-container", this.genid(this.items.knowledge));
+        this.itemsMap.forEach(([_, buttonId, containerId, types]) => {
+            document.getElementById(buttonId).addEventListener("click", () => {
+                new Item(containerId, types);
+            });
         });
 
-        saveQuest.addEventListener("click", async (e) => {
-            const doneContainer = document.getElementById("done-container");
-            const errorContainer = document.getElementById("error-container");
-            const problemContainer = document.getElementById("problem-container");
-            const knowledgeContainer = document.getElementById("knowledge-container");
+        document.getElementById("save-quest").addEventListener("click", async () => {
             const body = {
-                theme_description: theme.value,
+                theme_description: document.getElementById("theme").value,
                 done: [],
                 errors: [],
                 problems: [],
                 knowledge: [],
             };
             
-            for (const wrapper of doneContainer.getElementsByTagName("div")) {
-                body.done.push({
-                    id: wrapper.value,
-                    text: wrapper.getElementsByTagName("textarea")[0].value
-                });
-            };
-            for (const wrapper of doneContainer.getElementsByTagName("div")) {
-                body.errors.push({
-                    id: wrapper.value,
-                    text: wrapper.getElementsByTagName("textarea")[0].value,
-                    type: wrapper.getElementsByTagName("select")[0].value
-                });
-            };
-            for (const wrapper of doneContainer.getElementsByTagName("div")) {
-                body.problems.push({
-                    id: wrapper.value,
-                    text: wrapper.getElementsByTagName("textarea")[0].value
-                });
-            };
-            for (const wrapper of doneContainer.getElementsByTagName("div")) {
-                body.knowledge.push({
-                    id: wrapper.value,
-                    text: wrapper.getElementsByTagName("textarea")[0].value
-                });
-            };
+            this.itemsMap.forEach(([key, _, containerId, __]) => {
+                for (const item of document.getElementById(containerId).getElementsByTagName("div")) {
+                    body[key].push({
+                        text: item.getElementsByTagName("textarea")[0].value,
+                        type: item.getElementsByTagName("select")[0].value
+                    });
+                };
+            });
             await API.putQuest(body);
             document.location.href = REDIRECT_URL;
         });
     };
 
     async initItems() {
-        this.items = await API.getQuestItems();
-        if (this.items.done) {
-            for (const done of this.items.done) {
-                new Item("done-container", done.id, done.text);
-            };
-        };
-        if (this.items.errors) {
-            for (const error of this.items.errors) {
-                new Item("error-container", error.id, error.text, error.type, this.errorTypes);
-            };
-        };
-        if (this.items.problems) {
-            for (const problem of this.items.problems) {
-                new Item("problem-container", problem.id, problem.text);
-            };
-        };
-        if (this.items.knowledge) {
-            for (const knowledge of this.items.knowledge) {
-                new Item("knowledge-container", knowledge.id, knowledge.text);
-            };
-        };
-    };
-
-    genid(items) {
-        console.log(items);
-        const ids = [];
-        for (const item of items) {
-            ids.push(item.id);
-        };
-        const id = Math.max(ids) + 1;
-        items.push(id)
-        return id
+        const itemsData = await API.getQuest();
+        this.itemsMap.forEach(([key, _, containerId, types]) => {
+            itemsData[key].forEach(itemData => {
+                new Item(containerId, types, itemData.text, itemData.type);
+            });
+        });
     };
 };
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-    const errorTypes = await API.getErrorTypes();
-    const init = new Init(errorTypes)
+    const types = await API.getTypes();
+    const init = new Init(types)
     init.initView();
     init.initItems();
 });

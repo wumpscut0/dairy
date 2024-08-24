@@ -2,7 +2,8 @@
 {% load static %}
 {% block js %}
 	{% load static %}
-	<script>const QUEST_ID = {{ quest.pk }}</script>
+	<script>const BASE_URL = "{{ base_url }}"</script>
+	<script>const QUEST_ID = "{{ quest.id }}"</script>
 	<script>const REDIRECT_URL = "{% url 'dairyapp:quest_list' %}?date={{ quest.created_at|date:'Y-m-d' }}"</script>
     <script src="{% static 'js/script.js' %}"></script>
 {% endblock %}
