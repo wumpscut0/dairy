@@ -1,11 +1,13 @@
 {% extends "dairyapp/base.html" %}
-{% load static %}
+
 {% block js %}
+	<script>
+		const ENDPOINT = "{{ endpoint }}"
+		const REDIRECT_URL = "{% url 'dairyapp:quest_list' %}?date={{ quest.created_at|date:'Y-m-d' }}"
+	</script>
+	{{ quest_data|json_script:"quest_data" }}
 	{% load static %}
-	<script>const BASE_URL = "{{ base_url }}"</script>
-	<script>const QUEST_ID = "{{ quest.id }}"</script>
-	<script>const REDIRECT_URL = "{% url 'dairyapp:quest_list' %}?date={{ quest.created_at|date:'Y-m-d' }}"</script>
-    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/update_quest.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -13,13 +15,11 @@
         <h4>{{ quest.origin.name }}</h4>
         <h4>{{ quest.created_at }}</h4>
 
-	    <label for="theme">Theme</label>
-	    <input id="theme" value="{% firstof quest.theme_description '' %}">
+	    <p id="theme">{% firstof quest.theme '' %}</p>
 
-	    <div id="done-container" class="item-container">
-		    <h4>Done List</h4>
-	    </div>
-	    <button id="add-done" class="primary-button">🪦 Add done</button>
+	    <div id="task-container" class="item-container">
+	        <h4>Tasks</h4>
+        </div>
 
 	    <div id="error-container" class="item-container">
 		    <h4>Error List</h4>

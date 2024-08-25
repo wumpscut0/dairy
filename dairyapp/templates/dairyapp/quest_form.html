@@ -1,17 +1,40 @@
 {% extends "dairyapp/base.html" %}
-
+{% block js %}
+	<script>
+		const ENDPOINT = "{{ endpoint }}";
+		const REDIRECT_URL = "{% url 'dairyapp:quest_list' %}?date={{ date }}"
+	</script>
+	{{ tasks_types|json_script:"tasks_types" }}
+	{% load static %}
+    <script src="{% static 'js/create_quest.js' %}"></script>
+{% endblock %}
 {% block body %}
-    <form class="container" method="post">
-	    {% csrf_token %}
-	    <div class="container__container-center">
-		    <h4>Origin {{ origin.name }} accept?</h4>
-	        <div style="display: none;">
-	            {{ form.as_p }}
-	        </div>
+	<div class="container">
+
+		<div id="quest-form" class="container__container-center">
+			<h4>New Quest</h4>
+			<select id="origin" class="select-primary">
+				{% for origin in origins %}
+					{% if origin.name == default_origin.name %}
+						<option value="{{ origin.pk }}" selected>{{ origin.name }}</option>
+					{% else %}
+						<option value="{{ origin.pk }}">{{ origin.name }}</option>
+					{% endif %}
+				{% endfor %}
+			</select>
+			<label for="theme">Тема</label>
+			<input class="input-primary" type="text" id="theme">
+		</div>
+
+		<div id="task-container" class="item-container">
+		    <h4>Tasks</h4>
 	    </div>
-        <div class="container__container-row">
-	        <button class="primary-button" type="submit">Yes</button>
-            <a class="primary-button" href="{% url 'dairyapp:index' %}">No</a>
-        </div>
-    </form>
+
+		<button type="button" id="add-task" class="primary-button">📜 Add Task</button>
+
+		<div class="buttons-container">
+		    <button class="primary-button" id="create-quest" type="button">Accept Quest</button>
+	        <a class="primary-button" href="{% url 'dairyapp:quest_list' %}?date={{ quest.created_at|date:'Y-m-d' }}">Back</a>
+		</div>
+	</div>
 {% endblock %}

@@ -4,6 +4,7 @@
     <div class="container">
         <h2>Results for {{ date }}</h2>
 	    <a class="primary-button" href="{% url 'dairyapp:day_update_form' pk=day.pk %}">Note day</a>
+	    <a class="primary-button" href="{% url 'dairyapp:quest_form' %}?date={{ date|date:'Y-m-d' }}">Create Quest</a>
         {% if not object_list %}
             <h5>I hope this day didn't go to waste</h5>
         {% else %}

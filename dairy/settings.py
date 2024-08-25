@@ -9,10 +9,15 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+
 import os.path
+from getpass import fallback_getpass
+from logging import fatal
 from os import getenv
 from pathlib import Path
+
 from dotenv import find_dotenv, load_dotenv
+
 load_dotenv(find_dotenv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,6 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 HOST = getenv("HOST")
+PORT = getenv("PORT")
 SECRET_KEY = getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -30,9 +36,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     HOST,
 ]
-CORS_ORIGIN_WHITELIST = [
-    f"http://{HOST}"
-]
+CORS_ORIGIN_WHITELIST = [f"http://{HOST}"]
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,14 +46,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
-    'rest_framework',
-    
+    "rest_framework",
     "dairyapp.apps.DairyappConfig",
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -57,7 +59,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-
 ]
 
 ROOT_URLCONF = "dairy.urls"
@@ -113,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'Asia/Novosibirsk'
+TIME_ZONE = "Asia/Novosibirsk"
 
 USE_I18N = True
 
@@ -125,7 +126,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '/css'),
+    os.path.join(BASE_DIR, "/css"),
 ]
 
 # Default primary key field type
@@ -133,6 +134,15 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Other
-
-API_BASE_URL = f"http://{HOST}:{getenv("PORT")}/api"
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "detailed": {
+            "format": "===LOG===\nTIME: %(asctime)s\nLEVEL: %(levelname)s\nMessage: %(message)s\n===LOG===",
+            "datefmt": "%d.%m.%Y %H:%M:%S",
+        }
+    },
+    "handlers": {"stdout": {"class": "logging.StreamHandler", "formatter": "detailed"}},
+    "loggers": {"stdout": {"level": "DEBUG", "handlers": ["stdout"]}},
+}
