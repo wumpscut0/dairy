@@ -62,9 +62,10 @@ class QuestCreateModelSerializer(ModelSerializer):
                 data["quest_id"] = quest.pk
                 data_to_create.append(Task(**data))
             Task.objects.bulk_create(data_to_create)
-            Origin.objects.filter(pk=validated_data["origin"]).update(
-                last_extracted_at=now()
-            ).save()
+            validated_data["origin"].last_extracted_at = now()
+            validated_data["origin"].save()
+
+
             return quest
 
 
