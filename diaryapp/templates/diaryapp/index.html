@@ -1,0 +1,8 @@
+{% extends "diaryapp/base.html" %}
+
+{% block body %}
+    <div class="container">
+	    <a class="primary-button" href="{% url 'diaryapp:quest_list' %}">Dairy</a>
+        <a class="primary-button" href="{% url 'diaryapp:origin_list' %}">Origins</a>
+    </div>
+{% endblock %}

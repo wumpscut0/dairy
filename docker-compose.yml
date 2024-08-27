@@ -1,5 +1,5 @@
 services:
-  dairy:
+  diary:
     build:
       dockerfile: ./Dockerfile
     env_file: .env

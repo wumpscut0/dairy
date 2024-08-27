@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+            Dairy
+        {% endblock %}
+    </title>
+	{% load static %}
+    <link rel="preload" href="/static/images/background.jpg" as="image">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+	{% block js %}
+	{% endblock %}
+</head>
+<body>
+    {% block body %}
+        Hello World!
+    {% endblock %}
+</body>
+</html>

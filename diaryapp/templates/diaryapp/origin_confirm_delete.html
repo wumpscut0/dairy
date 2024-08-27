@@ -1,0 +1,13 @@
+{% extends "diaryapp/base.html" %}
+
+{% block body %}
+	<form class="container" method="post">
+		{% csrf_token %}
+		<h1>Confirm delete</h1>
+		<p>Delete origin "{{ object.name }}"?</p>
+		<div class="container__container-row">
+			<button class="primary-button" type="submit">Yes</button>
+			<a class="primary-button" href="{% url 'diaryapp:origin_list' %}">No</a>
+		</div>
+	</form>
+{% endblock %}
