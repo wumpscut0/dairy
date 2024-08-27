@@ -45,7 +45,7 @@
             <div class="container__container-row">
                 <a class="primary-button" href="?date={{ date|date:'Y-m-d' }}&previous">Previous Day</a>
             </div>
-        {% else %}
+        {% elif has_next %}
             <div class="container__container-right">
 	            <a class="primary-button" href="?date={{ date|date:'Y-m-d' }}&next">Next Day</a>
             </div>

@@ -11,8 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os.path
-from getpass import fallback_getpass
-from logging import fatal
+from _socket import gethostbyname_ex, gethostname
 from os import getenv
 from pathlib import Path
 
@@ -22,21 +21,44 @@ load_dotenv(find_dotenv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# DATABASE_DIR = BASE_DIR / "database"
+# DATABASE_DIR.mkdir(exist_ok=True)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-HOST = getenv("HOST")
-PORT = getenv("PORT")
-SECRET_KEY = getenv("SECRET_KEY")
+API_HOST = "0.0.0.0"
+API_PORT = "8000"
+PORT = getenv("PORT", "8000")
+SECRET_KEY = getenv("SECRET_KEY", "django-insecure-^fwmmllab9k&f3+6+saims+o*p4gkl_8g4vf-ty!=9ajfdue7^")
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = getenv("DEBUG", False) == "1"
 DEBUG = True
+# ALLOWED_HOSTS = [
+#     "127.0.0.1",
+# ] + getenv("HOSTS", "").split(",")
+# CORS_ORIGIN_WHITELIST = [f"http://127.0.0.1"]
 ALLOWED_HOSTS = [
-    HOST,
+    "0.0.0.0",
+    "127.0.0.1",
+] + getenv("HOSTS", "").split(",")
+
+INTERNAL_IPS = [
+    "127.0.0.1"
 ]
-CORS_ORIGIN_WHITELIST = [f"http://{HOST}"]
+
+if DEBUG:
+    hostname, __, ips = gethostbyname_ex(gethostname())
+    INTERNAL_IPS.append("10.0.2.2")
+    INTERNAL_IPS.extend(
+        [ip[:ip.rfind(".")] + ".1" for ip in ips]
+)
+
+# CORS_ORIGIN_WHITELIST = [f"http://127.0.0.1"]
+CORS_ORIGIN_WHITELIST = [f"http://0.0.0.0"]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -138,11 +160,11 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "detailed": {
+        "verbose": {
             "format": "===LOG===\nTIME: %(asctime)s\nLEVEL: %(levelname)s\nMessage: %(message)s\n===LOG===",
             "datefmt": "%d.%m.%Y %H:%M:%S",
         }
     },
-    "handlers": {"stdout": {"class": "logging.StreamHandler", "formatter": "detailed"}},
+    "handlers": {"stdout": {"class": "logging.StreamHandler", "formatter": "verbose"}},
     "loggers": {"stdout": {"level": "DEBUG", "handlers": ["stdout"]}},
 }

@@ -3,4 +3,4 @@ db.sqlite3
 .venv
 *.xml
 /dumps
-/.env
+.env.template

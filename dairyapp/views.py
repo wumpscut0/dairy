@@ -110,18 +110,21 @@ class OriginUpdateView(UpdateView):
 
 class QuestCreateTemplateView(TemplateView):
     template_name = "dairyapp/quest_form.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    
+    def get(self, request, *args, **kwargs):
         default_origin = self._extract_actual_origin()
         if default_origin is None:
             return redirect(reverse("dairyapp:origin_list"))
-        context["endpoint"] = f"http://{settings.HOST}:{settings.PORT}/api/quest/create"
-        context["date"] = self.request.GET.get("date")
-        context["origins"] = Origin.objects.all()
-        context["default_origin"] = default_origin
-        context["tasks_types"] = TYPES["tasks"]
-        return context
+        
+        context = self.get_context_data(**kwargs)
+        context.update({
+                "endpoint": f"http://{settings.API_HOST}:{settings.API_PORT}/api/quest/create",
+                "date": self.request.GET.get("date"),
+                "origins": Origin.objects.all(),
+                "default_origin": default_origin,
+                "tasks_types": TYPES["tasks"],
+        })
+        return self.render_to_response(context)
 
     @staticmethod
     def _extract_actual_origin():
@@ -131,10 +134,13 @@ class QuestCreateTemplateView(TemplateView):
             .first()
         )
         if new_origin:
-            origin = new_origin
+            actual_origin = new_origin
         else:
-            origin = Origin.objects.filter(status="a").first()
-        return origin
+            actual_origin = Origin.objects.filter(status="a").first()
+            
+        if not actual_origin:
+            return Origin.objects.filter(status="f").first()
+        return actual_origin
 
 
 class QuestListView(ListView):
@@ -166,7 +172,7 @@ class QuestListView(ListView):
         context["has_previous"] = Quest.objects.filter(
             created_at__date__lt=date
         ).exists()
-        context["has_next"] = date < now().date()
+        context["has_next"] = date < datetime.now().date()
         return context
 
     def get(self, request: HttpRequest, *args, **kwargs):
@@ -195,7 +201,7 @@ class QuestEditTemplateView(TemplateView):
         try:
             context["quest"] = Quest.objects.get(pk=self.kwargs.get("pk", -1))
             context["endpoint"] = (
-                f"http://{settings.HOST}:{settings.PORT}/api/quest/{context["quest"].pk}/update"
+                f"http://{settings.API_HOST}:{settings.API_PORT}/api/quest/{context["quest"].pk}/update"
             )
             context["quest_data"] = QuestEditModelSerializer(context["quest"]).data
             return context
