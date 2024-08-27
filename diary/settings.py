@@ -28,7 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-API_HOST = "0.0.0.0"
+# API_HOST = "0.0.0.0"
+API_HOST = "127.0.0.1"
 API_PORT = "8000"
 PORT = getenv("PORT", "8000")
 SECRET_KEY = getenv("SECRET_KEY", "django-insecure-^fwmmllab9k&f3+6+saims+o*p4gkl_8g4vf-ty!=9ajfdue7^")
@@ -36,10 +37,7 @@ SECRET_KEY = getenv("SECRET_KEY", "django-insecure-^fwmmllab9k&f3+6+saims+o*p4gk
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = getenv("DEBUG", False) == "1"
 DEBUG = True
-# ALLOWED_HOSTS = [
-#     "127.0.0.1",
-# ] + getenv("HOSTS", "").split(",")
-# CORS_ORIGIN_WHITELIST = [f"http://127.0.0.1"]
+
 ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1",
@@ -57,8 +55,7 @@ if DEBUG:
         [ip[:ip.rfind(".")] + ".1" for ip in ips]
 )
 
-# CORS_ORIGIN_WHITELIST = [f"http://127.0.0.1"]
-CORS_ORIGIN_WHITELIST = [f"http://0.0.0.0"]
+CORS_ORIGIN_WHITELIST = [f"http://127.0.0.1" f"http://0.0.0.0"]
 
 # Application definition
 

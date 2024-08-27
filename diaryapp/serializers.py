@@ -5,7 +5,7 @@ from django.utils.timezone import now
 from rest_framework.fields import IntegerField
 from rest_framework.serializers import ModelSerializer
 
-from .models import Quest, Error, Problem, Knowledge, Task, TYPES, Origin
+from .models import Quest, Error, Problem, Knowledge, Task, TYPES
 
 logger = getLogger("stdout")
 

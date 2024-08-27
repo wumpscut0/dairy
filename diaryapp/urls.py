@@ -10,7 +10,6 @@ from .views import (
     OriginDeleteView,
     QuestDeleteView,
     DayUpdateView,
-    get_types,
     QuestApi,
     QuestCreateTemplateView,
 )
