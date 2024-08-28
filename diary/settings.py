@@ -16,6 +16,7 @@ from os import getenv
 from pathlib import Path
 
 from dotenv import find_dotenv, load_dotenv
+from tutorial.settings import BASE_DIR
 
 load_dotenv(find_dotenv())
 
@@ -144,6 +145,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "uploads"
+
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "/css"),

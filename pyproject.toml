@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "dairtgtry"
+name = "dairy"
 version = "0.1.0"
-description = "daieray"
+description = "dairy"
 authors = ["wumpscut0"]
 readme = "README.md"
 

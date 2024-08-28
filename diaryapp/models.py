@@ -1,34 +1,14 @@
 from json import load
 from pathlib import Path
+from urllib.error import URLError
+from urllib.request import urlopen
 
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 
 from django.db.models import TextField
-
-TYPES_PATH = Path("types.json").resolve()
-with open(TYPES_PATH) as file:
-    TYPES = load(file)
-
-
-def task_types_validator(value):
-    if value and value not in TYPES["tasks"]:
-        raise ValidationError("Wrong type")
-
-
-def error_types_validator(value):
-    if value and value not in TYPES["errors"]:
-        raise ValidationError("Wrong type")
-
-
-def problem_types_validator(value):
-    if value and value not in TYPES["problems"]:
-        raise ValidationError("Wrong type")
-
-
-def knowledge_types_validator(value):
-    if value and value not in TYPES["knowledge"]:
-        raise ValidationError("Wrong type")
 
 
 class Day(models.Model):
@@ -53,40 +33,48 @@ class Problem(models.Model):
         max_length=50, validators=(problem_types_validator,), null=True, blank=True
     )
     text = TextField(max_length=1000, null=True, blank=True)
-    quest = models.ForeignKey(
-        "Quest", on_delete=models.CASCADE, related_name="problems"
-    )
-    class Meta:
-        db_table = "dairyapp_problem"
 
 
 class Knowledge(models.Model):
-    type = models.CharField(
-        max_length=50, validators=(knowledge_types_validator,), null=True, blank=True
-    )
+    type = models.CharField(default="knowledge", max_length=50, choices=(knowledge_types_validator,), null=True, blank=True)
     text = TextField(max_length=1000, null=True, blank=True)
-    quest = models.ForeignKey(
-        "Quest", on_delete=models.CASCADE, related_name="knowledge"
-    )
     class Meta:
         db_table = "dairyapp_knowledge"
 
 
 class Task(models.Model):
-    status = models.SmallIntegerField(default=0)
-    type = models.CharField(max_length=50, validators=(task_types_validator,))
-    text = TextField(max_length=1000)
-    quest = models.ForeignKey("Quest", on_delete=models.CASCADE, related_name="tasks")
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True)
+    planned_datetime = models.DateTimeField(null=True)
+    status = models.CharField(default="process", choices=TYPES["task_status"])
+    type = models.CharField(default="general", max_length=50, choices=TYPES["tasks"])
+    file = models.FileField(upload_to="task/attachments")
+    description = TextField(max_length=1000)
+
+def is_resource_available(value):
+    try:
+        urlopen(value)
+    except URLError:
+        raise ValidationError(f"resource with url {value} not available")
     
-    class Meta:
-        db_table = "dairyapp_task"
+class Resource(models.Model):
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="concepts")
+    
+    domain = models.CharField(max_length=100)
+    status = models.CharField(validators=(is_resource_available,))
+    
+class Concept(models.Model):
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="concepts")
+    
+    name = models.CharField(max_length=20)
+    theory_level = models.CharField(default="0", choices=)
 
 
 class Quest(models.Model):
     class Meta:
         ordering = "completed_at", "created_at"
     
-        db_table = "dairyapp_quest"
+        db_table = "diaryapp_quest"
 
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True, blank=True)
