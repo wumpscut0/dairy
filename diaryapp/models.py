@@ -28,13 +28,6 @@ class Error(models.Model):
         db_table = "dairyapp_error"
 
 
-class Problem(models.Model):
-    type = models.CharField(
-        max_length=50, validators=(problem_types_validator,), null=True, blank=True
-    )
-    text = TextField(max_length=1000, null=True, blank=True)
-
-
 class Knowledge(models.Model):
     type = models.CharField(default="knowledge", max_length=50, choices=(knowledge_types_validator,), null=True, blank=True)
     text = TextField(max_length=1000, null=True, blank=True)
