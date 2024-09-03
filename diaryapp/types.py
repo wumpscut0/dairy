@@ -1,10 +1,51 @@
 TYPES = {
-  "tasks": {
+  "target_proprety": {
+    "ultimate": "Ultima Thule",
+    "global": "Глобальная",
+  },
+  "priority": {
+    "low": "Низкий",
+    "medium": "Средний",
+    "high": "Высокий",
+    "important": "Максимальный"
+  },
+  "target_type": {
     "general": "Задача",
+    "routine": "Рутина",
     "creative": "Творчество",
     "puzzle": "Головоломка",
     "physical": "Физическая нагрузка",
     "contact": "Контакт"
+  },
+  "task_status": {
+    "process": "В процессе",
+    "done": "Выполнено",
+    "failed": "Провалено",
+    "canceled": "Отменено"
+  },
+  "area": {
+    "programming_language": "Язык программирования",
+    "technology": "Технология", # Инструмент управления технологией
+    "science": "Наука", # Область
+    "paradigm": "Парадигма",
+    "method": "Метод",
+    "Framework": "Фреймворк",
+    "library": "Библиотека",
+    "language": "Язык",
+    "other": "Другое",
+  },
+  "comprehension": {
+    "unknown": "Неизвестно",
+    "0": "0",
+    "some": "Некоторое",
+    "volume": "Объёмное",
+    "full": "Полное",
+  },
+  "grade": {
+    "0": "0",
+    "beginner": "Базовый",
+    "middle": "Средний",
+    "advanced": "Продвинутый"
   },
   "errors": {
     "knowledge": "Недостаток знаний",
@@ -58,19 +99,8 @@ TYPES = {
     "status": "Новый социальный статус",
     "relationship": "Улучшение связи"
   },
-  "task_status": {
-    "process": "В процессе",
-    "done": "Выполнено",
-    "failed": "Провалено"
-  },
   "domain_status": {
     "unavailable": "Недоступен",
     "available": "Доступен"
   },
-  "theory_level": {
-    "0": "0",
-    "1": "1",
-    "2": "Углублённое понимание",
-    "3": "Широкое углублённое понимание"
-  }
 }
