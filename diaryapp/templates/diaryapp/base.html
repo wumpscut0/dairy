@@ -8,21 +8,18 @@
 	<meta name="keywords" content="EFP-Diary">
 	<meta name="viewport" content="width=device-width; initial-scale=1.0">
 	<meta http-equiv="content-type" content="text/html">
-    <title>
+	<title>
         {% block title %}
             Diary
         {% endblock %}
     </title>
-	{% load static %}
-    <link rel="preload" href="/static/images/background.jpg" as="image">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<!--	{% load static %}-->
+<!--    <link rel="stylesheet" href="{% static 'css/styles.css' %}">-->
     <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
-	{% block js %}
-	{% endblock %}
 </head>
 <body>
     {% block body %}
-        Hello World!
+        Diary
     {% endblock %}
 </body>
 </html>

@@ -10,13 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-import os.path
 from _socket import gethostbyname_ex, gethostname
 from os import getenv
 from pathlib import Path
 
+from apscheduler.schedulers.background import BackgroundScheduler
+from django.urls import reverse_lazy
 from dotenv import find_dotenv, load_dotenv
-from tutorial.settings import BASE_DIR
+
 
 load_dotenv(find_dotenv())
 
@@ -80,6 +81,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.contrib.auth.middleware.LoginRequiredMiddleware"
 ]
 
 ROOT_URLCONF = "diary.urls"
@@ -149,9 +151,9 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "uploads"
 
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "/css"),
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "/css"),
+# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -170,3 +172,22 @@ LOGGING = {
     "handlers": {"stdout": {"class": "logging.StreamHandler", "formatter": "verbose"}},
     "loggers": {"stdout": {"level": "DEBUG", "handlers": ["stdout"]}},
 }
+
+LOGIN_URL = "login/"
+LOGIN_REDIRECT_URL = reverse_lazy("diaryapp:index")
+
+scheduler = BackgroundScheduler({
+    'apscheduler.jobstores.redis': {
+        'type': 'redis'
+    },
+    'apscheduler.executors.default': {
+        'class': 'apscheduler.executors.pool:ThreadPoolExecutor',
+        'max_workers': '20'
+    },
+    'apscheduler.job_defaults.coalesce': 'true',
+    'apscheduler.job_defaults.max_instances': '3',
+    'apscheduler.timezone': 'UTC',
+})
+
+scheduler.start()
+
