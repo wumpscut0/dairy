@@ -10,12 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-import os.path
 from _socket import gethostbyname_ex, gethostname
 from os import getenv
 from pathlib import Path
 
+from apscheduler.schedulers.background import BackgroundScheduler
+from django.urls import reverse_lazy
 from dotenv import find_dotenv, load_dotenv
+
 
 load_dotenv(find_dotenv())
 
@@ -28,7 +30,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-API_HOST = "0.0.0.0"
+# API_HOST = "0.0.0.0"
+API_HOST = "127.0.0.1"
 API_PORT = "8000"
 PORT = getenv("PORT", "8000")
 SECRET_KEY = getenv("SECRET_KEY", "django-insecure-^fwmmllab9k&f3+6+saims+o*p4gkl_8g4vf-ty!=9ajfdue7^")
@@ -36,13 +39,11 @@ SECRET_KEY = getenv("SECRET_KEY", "django-insecure-^fwmmllab9k&f3+6+saims+o*p4gk
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = getenv("DEBUG", False) == "1"
 DEBUG = True
-# ALLOWED_HOSTS = [
-#     "127.0.0.1",
-# ] + getenv("HOSTS", "").split(",")
-# CORS_ORIGIN_WHITELIST = [f"http://127.0.0.1"]
+
 ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1",
+    "localhost"
 ] + getenv("HOSTS", "").split(",")
 
 INTERNAL_IPS = [
@@ -56,8 +57,7 @@ if DEBUG:
         [ip[:ip.rfind(".")] + ".1" for ip in ips]
 )
 
-# CORS_ORIGIN_WHITELIST = [f"http://127.0.0.1"]
-CORS_ORIGIN_WHITELIST = [f"http://0.0.0.0"]
+CORS_ORIGIN_WHITELIST = [f"http://127.0.0.1" f"http://0.0.0.0"]
 
 # Application definition
 
@@ -69,7 +69,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "diaryapp.apps.DairyappConfig",
+    "diaryapp.apps.DiaryappConfig",
 ]
 
 MIDDLEWARE = [
@@ -81,6 +81,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.contrib.auth.middleware.LoginRequiredMiddleware"
 ]
 
 ROOT_URLCONF = "diary.urls"
@@ -146,10 +147,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "uploads"
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "/css"),
-]
+
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "/css"),
+# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -168,3 +172,22 @@ LOGGING = {
     "handlers": {"stdout": {"class": "logging.StreamHandler", "formatter": "verbose"}},
     "loggers": {"stdout": {"level": "DEBUG", "handlers": ["stdout"]}},
 }
+
+LOGIN_URL = "login/"
+LOGIN_REDIRECT_URL = reverse_lazy("diaryapp:index")
+
+scheduler = BackgroundScheduler({
+    'apscheduler.jobstores.redis': {
+        'type': 'redis'
+    },
+    'apscheduler.executors.default': {
+        'class': 'apscheduler.executors.pool:ThreadPoolExecutor',
+        'max_workers': '20'
+    },
+    'apscheduler.job_defaults.coalesce': 'true',
+    'apscheduler.job_defaults.max_instances': '3',
+    'apscheduler.timezone': 'UTC',
+})
+
+scheduler.start()
+

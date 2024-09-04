@@ -1,8 +1,23 @@
 {% extends "diaryapp/base.html" %}
 
 {% block body %}
-    <div class="container">
-	    <a class="primary-button" href="{% url 'diaryapp:quest_list' %}">Dairy</a>
-        <a class="primary-button" href="{% url 'diaryapp:origin_list' %}">Origins</a>
-    </div>
+	<header>
+		<h1>Diary</h1>
+		<div>
+			<p><a href="{% url 'diaryapp:register' %}">Регистрация</a></p>
+			{% if user.is_authenticated %}
+				<form method="post" action="{% url 'diaryapp:logout' %}">
+					{% csrf_token %}
+					<button type="submit">Выход</button>
+				</form>
+			{% else %}
+				<p><a href="{% url 'diaryapp:login' %}">Вход</a></p>
+			{% endif %}
+		</div>
+	</header>
+	<section>
+		<div>
+			Diary
+		</div>
+	</section>
 {% endblock %}

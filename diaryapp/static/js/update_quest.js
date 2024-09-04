@@ -129,7 +129,6 @@ class Init {
                 });
             });
             Array.from(document.getElementById(Task.containerId).getElementsByTagName("div")).forEach((task, index) => {
-                console.log(task.getElementsByTagName("input")[0].value);
                 body.tasks.push({
                     id: task.id,
                     text: QUEST_DATA.tasks[index].text,

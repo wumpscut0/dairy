@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
+	<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
+	<meta name="author" content="Wynardtage">
+	<meta name="description" content="EFP-Diary for every day">
+	<meta name="keywords" content="EFP-Diary">
+	<meta name="viewport" content="width=device-width; initial-scale=1.0">
+	<meta http-equiv="content-type" content="text/html">
+	<title>
         {% block title %}
-            Dairy
+            Diary
         {% endblock %}
     </title>
-	{% load static %}
-    <link rel="preload" href="/static/images/background.jpg" as="image">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<!--	{% load static %}-->
+<!--    <link rel="stylesheet" href="{% static 'css/styles.css' %}">-->
     <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
-	{% block js %}
-	{% endblock %}
 </head>
 <body>
     {% block body %}
-        Hello World!
+        Diary
     {% endblock %}
 </body>
 </html>

@@ -9,4 +9,3 @@ services:
       options:
         max-size: 200k
         max-file: 10
-    restart: always

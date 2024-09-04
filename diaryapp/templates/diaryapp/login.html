@@ -1,0 +1,14 @@
+{% extends "diaryapp/base.html" %}
+
+{% block title %}
+	Вход
+{% endblock %}
+
+{% block body %}
+	<form method="post" action="{% url 'diaryapp:login' %}">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button type="submit">Войти</button>
+	</form>
+	<a href="{% url 'diaryapp:index' %}">На главную</a>
+{% endblock %}

@@ -13,6 +13,7 @@ Diary
 - Docker 27.0.3
 - git 2.45.2
 - bash 5.2.26
+
 2. Выполните команду
 ```bash
 git clone https://github.com/wumpscut0/diary.git ./diary_wumpscut0 && cd ./diary_wumpscut0 && docker-compose up --build

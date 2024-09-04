@@ -1,121 +1,138 @@
-from json import load
-from pathlib import Path
+from logging import getLogger
+from typing import Dict
+from urllib.error import URLError
+from urllib.request import urlopen
 
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
-
-from django.db.models import TextField
 from django.utils.timezone import now
 
-TYPES_PATH = Path("types.json").resolve()
-with open(TYPES_PATH) as file:
-    TYPES = load(file)
+logger = getLogger("stdout")
 
 
-# def done_types_validator(value):
-# 	if value and value not in TYPES["done"]:
-# 		raise ValidationError("Wrong type")
-def task_types_validator(value):
-    if value and value not in TYPES["tasks"]:
-        raise ValidationError("Wrong type")
+
+def calc_max_length(data: Dict):
+    return len(max(data, key=lambda x: len(x)))
 
 
-def error_types_validator(value):
-    if value and value not in TYPES["errors"]:
-        raise ValidationError("Wrong type")
+def reaper(pk: int):
+    try:
+        target = Target.objects.get(pk=pk)
+        target.status = "failed"
+        target.save()
+    except Target.DoesNotExists:
+        logger.error(f"With trying set `failed` flag for Target with pk {pk}, Target was not found")
 
 
-def problem_types_validator(value):
-    if value and value not in TYPES["problems"]:
-        raise ValidationError("Wrong type")
+def future_date(value):
+    if value <= now():
+        raise ValidationError("planned_datetime can`t be in the past")
 
-
-def knowledge_types_validator(value):
-    if value and value not in TYPES["knowledge"]:
-        raise ValidationError("Wrong type")
-
-
-class Day(models.Model):
+class Note(models.Model):
     created_at = models.DateTimeField()
-    content = models.TextField(null=True, blank=True)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notes")
+    
+    note = models.TextField(null=True, blank=True)
 
 
-# class Done(models.Model):
-# 	type = models.CharField(max_length=50, validators=(done_types_validator,), null=True, blank=True)
-# 	text = TextField(max_length=1000, null=True, blank=True)
-# 	quest = models.ForeignKey("Quest", on_delete=models.CASCADE, related_name="done")
-
-
-class Error(models.Model):
-    type = models.CharField(
-        max_length=50, validators=(error_types_validator,), null=True, blank=True
-    )
-    text = TextField(max_length=1000, null=True, blank=True)
-    quest = models.ForeignKey("Quest", on_delete=models.CASCADE, related_name="errors")
-
-
-class Problem(models.Model):
-    type = models.CharField(
-        max_length=50, validators=(problem_types_validator,), null=True, blank=True
-    )
-    text = TextField(max_length=1000, null=True, blank=True)
-    quest = models.ForeignKey(
-        "Quest", on_delete=models.CASCADE, related_name="problems"
-    )
-
-
-class Knowledge(models.Model):
-    type = models.CharField(
-        max_length=50, validators=(knowledge_types_validator,), null=True, blank=True
-    )
-    text = TextField(max_length=1000, null=True, blank=True)
-    quest = models.ForeignKey(
-        "Quest", on_delete=models.CASCADE, related_name="knowledge"
-    )
-
-
-class Task(models.Model):
-    status = models.SmallIntegerField(default=0)
-    type = models.CharField(max_length=50, validators=(task_types_validator,))
-    text = TextField(max_length=1000)
-    quest = models.ForeignKey("Quest", on_delete=models.CASCADE, related_name="tasks")
-
-
-class Quest(models.Model):
-    class Meta:
-        ordering = "completed_at", "created_at"
-
+class Target(models.Model):
+    statuses = {
+        "process": "В процессе",
+        "done": "Выполнено",
+        "failed": "Провалено",
+        "canceled": "Отменено"
+    }
+    types = {
+        "ultimate": "UT",
+        "story": "Сюжет",
+        "additional": "Дополнение",
+        "task": "Задача"
+    }
+    
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="creator")
     created_at = models.DateTimeField(auto_now_add=True)
-    completed_at = models.DateTimeField(null=True, blank=True)
-    last_update = models.DateTimeField(null=True)
-
-    origin = models.ForeignKey("Origin", on_delete=models.SET_NULL, null=True)
-    theme = models.CharField(max_length=100, null=True, blank=True)
-
-    deprecated_total_tasks = models.SmallIntegerField(default=0)
-    deprecated_total_completed_tasks = models.SmallIntegerField(default=0)
-    deprecated_complete_description = models.TextField(
-        max_length=1000, null=True, blank=True
-    )
-    deprecated_knowledge = models.TextField(max_length=1000, null=True, blank=True)
+    type = models.CharField(max_length=calc_max_length(types), default="task", choices=types)
+    
+    over_at = models.DateTimeField(null=True)
+    planned_datetime = models.DateTimeField(null=True, validators=(future_date,))
+    status = models.CharField(max_length=calc_max_length(statuses), default="process", choices=statuses)
+    group_priority = models.IntegerField(default=0, help_text="priority grouped by type")
+    condition = models.TextField(max_length=255, help_text="user condition for determining the task status")
+    description = models.TextField(max_length=1000, help_text="free textarea with any description")
+    
+    file = models.FileField(upload_to="tasks/attachments")
 
 
-class Origin(models.Model):
+def is_resource_available(value):
+    try:
+        urlopen(value)
+    except URLError:
+        raise ValidationError(f"resource with url {value} not available")
+    
+
+class Resource(models.Model):
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="resources")
+    
+    domain = models.CharField(max_length=100, validators=(is_resource_available,))
+    status = models.BooleanField(default=True)
+
+class Book(models.Model):
+    types = {
+        "unknown": "Неизвестно",
+        "0": "0",
+        "some": "Некоторое",
+        "volume": "Объёмное",
+        "full": "Полное",
+    }
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="books")
+    
+    author = models.CharField(max_length=30)
+    name = models.CharField(max_length=15)
+    file = models.FileField(upload_to="books", null=True)
+    comprehension = models.CharField(max_length=calc_max_length(types), default="unknown", choices=types)
+    
     class Meta:
-        ordering = (
-            "last_extracted_at",
-            "created_at",
-        )
+        unique_together = ("author", "name")
 
-    STATUS_CHOICES = [
-        ("a", "actual"),
-        ("f", "frozen"),
-        # ('j', 'job'),
-    ]
-    created_at = models.DateTimeField(auto_now_add=True)
-    last_extracted_at = models.DateTimeField(null=True)
-    name = models.CharField(max_length=30, unique=True)
-    status = models.CharField(
-        max_length=1, default="a", null=False, choices=STATUS_CHOICES
-    )
-    origin = models.CharField(max_length=2048, null=True, blank=True)
+
+
+class Area(models.Model):
+    types = {
+        "programming_language": "Язык программирования",
+        "technology": "Технология",  # Инструмент управления технологией
+        "science": "Наука",  # Область
+        "paradigm": "Парадигма",
+        "method": "Метод",
+        "Framework": "Фреймворк",
+        "library": "Библиотека",
+        "language": "Язык",
+        "other": "Другое",
+    }
+    grades = {
+        "0": "0",
+        "beginner": "Базовый",
+        "middle": "Средний",
+        "advanced": "Продвинутый"
+    }
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="areas")
+
+    name = models.CharField(max_length=20)
+    type = models.CharField(max_length=calc_max_length(types), default="other", choices=types)
+    grade = models.CharField(max_length=calc_max_length(grades), default="0", choices=grades)
+    experience = models.TextField(max_length=1000, null=True, blank=True)
+    
+    
+def params_factory():
+    return {
+        "push-ups": 0,
+        "squats": 0,
+        "bar": 0, #s
+        "pull-ups": 0,
+        "run": 0, #m
+    }
+
+class Profile(models.Model):
+    owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    
+    params = models.JSONField(default=params_factory)
